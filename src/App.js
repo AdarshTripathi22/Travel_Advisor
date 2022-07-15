@@ -6,11 +6,12 @@ import Header from "./components/Header/Header";
 import Map from "./components/Map/Map";
 import List from "./components/List/List";
 
-import { getPlacesData } from "./api";
+import { getPlacesData, getWeatherData } from "./api";
 
 const App = ()=> {
 
     const [places, setPlaces] = useState([]);
+    const [weatherData, setWeatherData] = useState([]);
     const [childClicked, setchildClicked] = useState(null);
 
     const [coordinates, setCoordinates] = useState({});
@@ -35,20 +36,29 @@ const App = ()=> {
     },[rating]);
     
     useEffect(()=> {
-        setisLoading(true);
+        if(bounds.sw && bounds.ne) {
+            setisLoading(true);
 
-        getPlacesData(type, bounds.sw, bounds.ne)
-            .then((data) => {
-                setPlaces(data);
-                setfilteredPlaces([]);
-                setisLoading(false);
-            })
-    }, [type, coordinates, bounds]);
+            getWeatherData(coordinates.lat, coordinates.lng)
+                .then((data)=>{
+                    setWeatherData(data);
+                })
+
+            getPlacesData(type, bounds.sw, bounds.ne)
+                .then((data) => {
+                    setPlaces(data && data.filter((place)=>(place.name && place.num_reviews>0)));
+                    setfilteredPlaces([]);
+                    setisLoading(false);
+                })
+        }
+    }, [type, bounds]);
 
     return (
         <>
             <CssBaseline />
-            <Header /><br/><br/><br/>
+            <Header 
+                setCoordinates={setCoordinates}
+            /><br/><br/><br/>
             <Grid container spacing = {4} style = {{width: "100%"}}>
                 <Grid item xs={12} md={4}>
                     <List 
@@ -66,6 +76,7 @@ const App = ()=> {
                         setBounds = {setBounds}
                         places = {filteredPlaces.length ? filteredPlaces : places}
                         setchildClicked = {setchildClicked}
+                        weatherData = {weatherData}
                     />
                 </Grid>
             </Grid>

@@ -1,3 +1,5 @@
+//jshint esversion: 6
+
 import React, { useState, useEffect, createRef } from "react";
 import { CircularProgress, Grid, Typography, InputLabel, MenuItem, FormControl, Select } from "@material-ui/core";
 
@@ -7,7 +9,7 @@ import useStyles from "./styles";
 
 const List = ({places, childClicked, isLoading, type, setType, rating, setRating})=> {
     const classes = useStyles();
-    
+
 
     // const [elRefs, setElRefs] = useState([]);
 
@@ -24,7 +26,7 @@ const List = ({places, childClicked, isLoading, type, setType, rating, setRating
                 isLoading ? (
                     <div className = {classes.loading}>
                         <CircularProgress size="5rem"/>
-                    </div>  
+                    </div>
                 ) : (
                     <>
                         <FormControl className = {classes.formControl}>
@@ -47,13 +49,13 @@ const List = ({places, childClicked, isLoading, type, setType, rating, setRating
                         <Grid container spacing={3} className = {classes.list}>
                             {places && places.map((place, i)=>(
                                 <Grid item key={i} xs={12}>
-                                    <PlaceDetails 
-                                        place = {place} 
+                                    <PlaceDetails
+                                        place = {place}
                                         selected={Number(childClicked) === i}
                                         // refProp = {elRefs[i]}
                                     />
                                 </Grid>
-                            ))} 
+                            ))}
                         </Grid>
                     </>
                 )
